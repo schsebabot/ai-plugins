@@ -71,8 +71,11 @@ Before any analysis, read the project's best-practices and contribution guidelin
 
 ### Step 1.2: Codebase Scan
 
+> **CodeGraph-first rule:** If the CodeGraph MCP server is configured and available, prefer `codegraph_explore` for all codebase exploration — it returns the relevant symbols' verbatim source, call paths, and blast radius in a single tool call, replacing slow grep/find/read loops. If CodeGraph is available but the project has no `.codegraph/` directory, run `codegraph init` in the project root first to build the initial graph. If CodeGraph is not available, **inform the user** and fall back to manual exploration below.
+
 1. **Explore the project structure.**
-   - Identify the programming language(s) and frameworks in use.
+   - If CodeGraph is available, use `codegraph_explore` to survey the project structure, entry points, and key modules.
+   - Otherwise, identify the programming language(s) and frameworks in use manually.
    - Note the directory layout and organizational patterns.
 
 2. **Find project conventions.**
@@ -81,13 +84,15 @@ Before any analysis, read the project's best-practices and contribution guidelin
    - Note the test framework, test organization (unit vs. integration vs. E2E), and mock generation tools.
 
 3. **Locate relevant existing code.**
-   - Find the files most related to the task (models, services, handlers, tests).
-   - Read them to understand existing patterns, naming conventions, and architecture.
+   - If CodeGraph is available, use `codegraph_explore` with a query describing what you need (e.g., "how does authentication work", "UserService and its callers"). Trust the returned source — do not re-read files that CodeGraph already provided.
+   - Otherwise, find the files most related to the task (models, services, handlers, tests) manually.
    - Identify reusable utilities, helpers, or abstractions already in the codebase.
 
 4. **Map dependencies and call chains.**
-   - If the task touches a service, trace who calls it and what it calls.
-   - If the task modifies an API endpoint, trace from handler → service → repository.
+   - If CodeGraph is available, use `codegraph_explore` to trace call paths and impact radius between symbols. This surfaces dynamic-dispatch hops that grep cannot follow.
+   - Otherwise, manually trace who calls what:
+     - If the task touches a service, trace who calls it and what it calls.
+     - If the task modifies an API endpoint, trace from handler → service → repository.
    - Note cross-component dependencies that may require coordinated changes.
 
 ### Step 1.3: Language-Specific Analysis
@@ -282,8 +287,10 @@ Before writing any code, re-read the project's best-practices files:
 
 Before writing code:
 
-1. **Read files you will modify.** Understand their current structure, imports, and conventions.
-2. **Read adjacent files.** If modifying a service, also read its handler, repository, and tests.
+> **CodeGraph-first rule:** If the CodeGraph MCP server is configured and available, prefer `codegraph_explore` for understanding the codebase before writing code. If CodeGraph is available but the project has no `.codegraph/` directory, run `codegraph init` in the project root first. If CodeGraph is not available, **inform the user** and fall back to manual file reading below.
+
+1. **Read files you will modify.** Use `codegraph_explore` to get the source of files and symbols you plan to change — it returns verbatim source with line numbers. Fall back to reading files directly if CodeGraph is not available.
+2. **Read adjacent files.** Use `codegraph_explore` to trace callers and callees of the functions you'll modify. If modifying a service, this reveals its handler, repository, and tests in one call. Fall back to manually reading adjacent files if CodeGraph is not available.
 3. **Check for project guidelines** (`AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md`, `Makefile`).
 4. **Match existing patterns.** Your code must look like it belongs in this codebase.
 5. **Identify the existing observability setup.** Find how the project does logging, metrics, and tracing. Use the SAME libraries and patterns.

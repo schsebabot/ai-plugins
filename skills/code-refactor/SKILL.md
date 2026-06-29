@@ -71,6 +71,8 @@ If the baseline is **not green**, report the failures to the user and **STOP**. 
 
 ### Step 1.3: Codebase Inventory
 
+> **CodeGraph-first rule:** If the CodeGraph MCP server is configured and available, prefer `codegraph_explore` for codebase inventory and analysis — it returns relevant symbols' verbatim source, call paths, and blast radius in a single tool call, replacing slow grep/find/read loops. If CodeGraph is available but the project has no `.codegraph/` directory, run `codegraph init` in the project root first to build the initial graph. If CodeGraph is not available, **inform the user** and fall back to manual exploration below.
+
 Walk the entire directory tree and build an inventory:
 
 1. **File catalog** — For each source file, record:
@@ -275,8 +277,8 @@ You are a specialized {DOMAIN_NAME} refactoring agent. Your job is to improve co
 ## What to Do
 
 For each file:
-1. Read the file and understand its current purpose and dependencies.
-2. Read adjacent files (callers, callees, tests) to understand the impact of changes.
+1. Read the file and understand its current purpose and dependencies. If CodeGraph is available, use `codegraph_explore` to get the source and understand the symbol graph — it returns verbatim source with line numbers. Fall back to reading files directly if CodeGraph is not available.
+2. Read adjacent files (callers, callees, tests) to understand the impact of changes. If CodeGraph is available, use `codegraph_explore` to trace callers and callees in one call. Fall back to manually reading adjacent files if CodeGraph is not available.
 3. Apply the refactoring targets identified in the plan.
 4. Add docstrings to all functions.
 5. Follow the domain-specific checklist.

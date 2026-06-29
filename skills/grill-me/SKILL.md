@@ -40,10 +40,12 @@ A structured interview skill that stress-tests a plan, design, or architecture d
 
 If a codebase is available, scan it to gather context that sharpens your questions.
 
-1. **Explore the project structure.** Understand the language(s), framework(s), directory layout, and organizational patterns.
+> **CodeGraph-first rule:** If the CodeGraph MCP server is configured and available, prefer `codegraph_explore` for all codebase exploration — it returns relevant symbols' verbatim source, call paths, and blast radius in a single tool call, replacing slow grep/find/read loops. If CodeGraph is available but the project has no `.codegraph/` directory, run `codegraph init` in the project root first to build the initial graph. If CodeGraph is not available, **inform the user** and fall back to manual exploration below.
+
+1. **Explore the project structure.** If CodeGraph is available, use `codegraph_explore` to survey the project structure, entry points, and key modules. Otherwise, understand the language(s), framework(s), directory layout, and organizational patterns manually.
 2. **Find project conventions.** Read `AGENTS.md`, `CONTRIBUTING.md`, `Makefile`, or equivalent files to understand how the project works. Do not hardcode any specific commands or targets.
-3. **Locate relevant existing code.** Find the modules, packages, or components most related to the plan. Read them to understand current patterns and constraints.
-4. **Map dependencies and integration points.** Identify what the plan touches, what depends on those areas, and where integration risks live.
+3. **Locate relevant existing code.** If CodeGraph is available, use `codegraph_explore` with a query describing the plan's area (e.g., "authentication flow", "database layer"). Trust the returned source — do not re-read files that CodeGraph already provided. Otherwise, find the modules, packages, or components most related to the plan manually. Read them to understand current patterns and constraints.
+4. **Map dependencies and integration points.** If CodeGraph is available, use `codegraph_explore` to trace call paths and impact radius between symbols the plan touches. Otherwise, identify what the plan touches, what depends on those areas, and where integration risks live manually.
 
 > **Key principle:** If a question can be answered by exploring the codebase, explore the codebase instead of asking the user. Present your findings and ask the user to confirm or correct.
 

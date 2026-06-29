@@ -20,6 +20,8 @@ Parse `owner`, `repo`, and `pullNumber` from the link.
 
 ## Workflow
 
+> **CodeGraph-first rule:** If the CodeGraph MCP server is configured and available, use `codegraph_explore` throughout this workflow to understand the code context around review comments — callers, callees, and blast radius of the symbols being discussed. This helps craft better fixes by understanding the full impact. If CodeGraph is available but the project has no `.codegraph/` directory, run `codegraph init` in the project root first to build the initial graph. If CodeGraph is not available, **inform the user** and fall back to manual file reading.
+
 ### Step 1 — Fetch review comments
 
 Use the GitHub MCP `pull_request_read` tool:
@@ -109,7 +111,7 @@ After all comments are processed, show:
 ## Important Rules
 
 - If `repo-folder` is provided, `cd` into it before making changes.
-- Always read the file before editing to get current content.
+- Always read the file before editing to get current content. If CodeGraph is available, use `codegraph_explore` to understand the surrounding code context (callers, callees, impact) before making changes.
 - Never batch multiple comment changes together — one at a time only.
 - Never push to remote.
 - Always add docstrings to new functions.
