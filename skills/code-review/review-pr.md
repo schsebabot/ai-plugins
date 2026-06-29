@@ -14,6 +14,7 @@ After completing the steps below, use the shared review workflow from [../review
 
 1. Use the GitHub MCP or `gh` CLI to fetch PR metadata (title, body, labels, base/head branches, linked issues).
 2. Clone or checkout the PR branch under `/tmp` if full file access is needed beyond the diff.
+3. **Initialize CodeGraph (if available):** If the CodeGraph MCP server is configured, check for a `.codegraph/` directory in the cloned/checked-out project. If it does not exist, run `codegraph init` to build the initial code graph. Use `codegraph_explore` throughout the review to understand call paths, blast radius, and symbol relationships — it replaces manual grep/find/read loops with a single tool call returning the relevant source and context. If CodeGraph is not available, **inform the user** and fall back to manual exploration.
 
 ## Step 2: PR Context & Commit Quality
 

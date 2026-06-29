@@ -18,6 +18,8 @@ Built on the open [Agent Skills](https://agentskills.io) standard — works with
   - [write-a-skill](#write-a-skill)
 - [Project Structure](#project-structure)
 - [MCP Servers](#mcp-servers)
+  - [GitHub MCP Server](#github-mcp-server)
+  - [CodeGraph MCP Server](#codegraph-mcp-server)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -284,7 +286,7 @@ ai-plugins/
 │   └── plugin.json
 ├── .cursor-plugin/           # Cursor plugin manifest
 │   └── plugin.json
-├── .mcp.json                 # MCP server configuration (GitHub)
+├── .mcp.json                 # MCP server configuration (GitHub, CodeGraph)
 ├── commands/                 # Slash command definitions
 │   ├── code-review.md
 │   ├── develop-feature.md
@@ -320,7 +322,11 @@ ai-plugins/
 
 ## MCP Servers
 
-The repository includes a pre-configured [GitHub MCP server](https://github.com/github/github-mcp-server) in `.mcp.json`. This gives skills access to GitHub APIs for fetching PR data, review comments, and more.
+The repository includes pre-configured MCP servers in `.mcp.json` for GitHub and CodeGraph integration.
+
+### GitHub MCP Server
+
+The [GitHub MCP server](https://github.com/github/github-mcp-server) gives skills access to GitHub APIs for fetching PR data, review comments, and more.
 
 **Setup:**
 
@@ -341,6 +347,50 @@ The repository includes a pre-configured [GitHub MCP server](https://github.com/
      }
    }
    ```
+
+### CodeGraph MCP Server
+
+[CodeGraph](https://github.com/colbymchenry/codegraph) provides semantic code intelligence — it builds a graph of your codebase's symbols, call paths, and relationships, enabling AI agents to explore code structure in a single tool call instead of slow grep/find/read loops.
+
+**Prerequisites:**
+
+Install CodeGraph from its repository:
+
+```bash
+# Install via Go
+go install github.com/colbymchenry/codegraph@latest
+
+# Or clone and build from source
+git clone https://github.com/colbymchenry/codegraph.git
+cd codegraph
+go install .
+```
+
+Ensure the `codegraph` binary is available on your `PATH`.
+
+**Setup:**
+
+The `.mcp.json` already includes the CodeGraph server configuration:
+
+```json
+{
+  "codegraph": {
+    "command": "codegraph",
+    "args": ["serve", "--mcp"]
+  }
+}
+```
+
+**First-time use in a project:**
+
+Before using CodeGraph in a project, you need to initialize the code graph:
+
+```bash
+cd /path/to/your/project
+codegraph init
+```
+
+This creates a `.codegraph/` directory with the indexed code graph. All code-related skills in this plugin will automatically detect and use CodeGraph when available, and will run `codegraph init` if the `.codegraph/` directory is missing.
 
 ## Contributing
 

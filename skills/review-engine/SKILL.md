@@ -25,6 +25,8 @@ Use this engine when:
 
 Review all changes made during the coding phase. Use `git diff` to see the full diff of changes.
 
+> **CodeGraph-first rule:** If the CodeGraph MCP server is configured and available, use `codegraph_explore` to understand the context around changed code — callers, callees, blast radius, and symbol relationships. This provides deeper context than reading files manually and surfaces dynamic-dispatch hops that grep cannot follow. If CodeGraph is available but the project has no `.codegraph/` directory, run `codegraph init` in the project root first to build the initial graph. If CodeGraph is not available, **inform the user** and fall back to manual file reading when the diff alone is insufficient.
+
 ### Step 2: Context Assessment
 
 1. Verify intent alignment: Do the changes actually solve the problem described in the original request? Code can be technically correct but still miss the point.
@@ -101,7 +103,7 @@ You are a specialized {PERSPECTIVE_NAME} code reviewer. Review the following cod
 
 {the diff content for these files}
 
-Read the full content of any file when the diff alone is insufficient to understand context.
+If CodeGraph is available, use `codegraph_explore` to understand context around changed symbols (callers, callees, impact) instead of reading full files. Otherwise, read the full content of any file when the diff alone is insufficient to understand context.
 
 ## Required Output Format
 
@@ -250,7 +252,7 @@ Do not proceed to the next finding until the user responds. If the parent workfl
 - Thoroughness over speed. A well-researched review catches more than a fast skim.
 - Focus on correctness, security, testing, and maintainability. Skip pure style nitpicks unless they materially affect readability.
 - Every finding MUST include a fix. Never flag an issue without showing how to resolve it.
-- Read surrounding code. When the diff is not enough, read the full files and their call sites.
+- Read surrounding code. When the diff is not enough, use `codegraph_explore` (if available) to get callers, callees, and blast radius of changed symbols. Fall back to reading full files and their call sites if CodeGraph is not available.
 - Understand intent before judging. Read the request, plan, PR description, or linked issues first.
 - Flag mixed concerns. Reviews are harder when unrelated work is bundled together.
 - Check for breaking changes, migration notes, and missing public documentation when APIs or config change.

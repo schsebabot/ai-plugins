@@ -118,6 +118,7 @@ Use this skill when:
    - Understand what the application does, its components, and service architecture.
 
 3. **Check for existing observability configuration.**
+   - If the CodeGraph MCP server is configured and available, prefer `codegraph_explore` to locate observability setup — it surfaces tracing, logging, and metrics initialization code in one call. If CodeGraph is available but the project has no `.codegraph/` directory, run `codegraph init` in the project root first. If CodeGraph is not available, **inform the user** and fall back to manual file search.
    - Look for OpenTelemetry configuration files, logging libraries, Jaeger integration code.
    - Understand the project's intended observability posture.
 

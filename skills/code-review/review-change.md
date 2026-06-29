@@ -19,7 +19,8 @@ After completing the steps below, use the shared review workflow from [../review
    ```bash
    git rev-parse --is-inside-work-tree
    ```
-3. Identify the base branch for comparison:
+3. **Initialize CodeGraph (if available):** If the CodeGraph MCP server is configured, check for a `.codegraph/` directory in the project root. If it does not exist, run `codegraph init` to build the initial code graph. CodeGraph provides semantic code intelligence — use `codegraph_explore` throughout the review to understand call paths, blast radius, and symbol relationships instead of manually reading files. If CodeGraph is not available, **inform the user** and fall back to manual exploration.
+4. Identify the base branch for comparison:
    ```bash
    git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null || echo "origin/main"
    ```
@@ -67,6 +68,7 @@ Flag commit quality issues as **low-severity**.
 Look for clues about what the change is trying to accomplish:
 - Current branch name (e.g., `feature/add-auth`, `fix/null-pointer`)
 - Recent commit messages
+- If CodeGraph is available, use `codegraph_explore` to understand the surrounding code context for changed symbols — callers, callees, and blast radius — to better assess the impact of the change. If CodeGraph is not available, **inform the user** and fall back to manual file reading.
 - If unclear, ask the user what the change is about before reviewing
 
 ## Step 4: Size Assessment
