@@ -9,6 +9,9 @@ Built on the open [Agent Skills](https://agentskills.io) standard — works with
 - [Installation](#installation)
   - [Claude Code](#claude-code)
   - [Cursor](#cursor)
+- [Updating](#updating)
+  - [Claude Code](#claude-code-1)
+  - [Cursor](#cursor-1)
 - [Available Skills](#available-skills)
   - [develop-feature](#develop-feature)
   - [code-review](#code-review)
@@ -106,6 +109,60 @@ cp -r ai-plugins/commands/* .cursor/commands/
 cp -r ai-plugins/skills/* ~/.cursor/skills/
 cp -r ai-plugins/commands/* ~/.cursor/commands/
 ```
+
+## Updating
+
+After the plugin is installed, here's how to pull the latest skill updates for each installation method.
+
+### Claude Code
+
+**Option A — Plugin Marketplace**
+
+Run this slash command inside a Claude Code session:
+
+```
+/plugin update ai-plugins@ai-plugins
+```
+
+**Option B — Skills Directory**
+
+Pull the latest changes from the repository:
+
+```bash
+cd ~/.claude/skills/ai-plugins && git pull
+```
+
+**Option C — Plugin Directory**
+
+Pull the latest changes in the cloned directory:
+
+```bash
+cd ./ai-plugins && git pull
+```
+
+### Cursor
+
+**Option A — Remote Rule from GitHub**
+
+No action needed — Cursor automatically re-fetches the latest skills from GitHub on each session.
+
+**Option B — Copy skills to your project**
+
+Pull the latest changes and re-copy the files:
+
+```bash
+cd ai-plugins && git pull
+
+# Project-level:
+cp -r skills/* .cursor/skills/
+cp -r commands/* .cursor/commands/
+
+# Or user-level:
+cp -r skills/* ~/.cursor/skills/
+cp -r commands/* ~/.cursor/commands/
+```
+
+> **Note:** Updates take effect immediately on the next Claude Code or Cursor session — no restart required.
 
 ## Available Skills
 
